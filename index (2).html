@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo · Agentes de IA para Mindfit — por Eudora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B2A4E; --navy-deep:#101B35; --orange:#F0842C; --orange-soft:#FDF0E4;
+  --ink:#202A3C; --gray:#5A6577; --paper:#F5F6F9; --line:#E2E6EE; --white:#FFFFFF;
+  --wa-green:#075E54; --wa-bubble:#DCF8C6; --wa-wall:#ECE5DD; --wa-accent:#25D366;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--paper);line-height:1.55}
+.display{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* ---------- Header ---------- */
+header{position:sticky;top:0;z-index:50;background:var(--navy);border-bottom:3px solid var(--orange)}
+.hd{display:flex;align-items:center;justify-content:space-between;height:60px}
+.hd-brand{font-family:'Barlow Condensed';font-weight:800;font-size:22px;color:#fff;letter-spacing:2px;text-transform:uppercase}
+.hd-brand span{color:var(--orange)}
+.hd nav{display:flex;gap:6px}
+.hd nav a{font-family:'Barlow Condensed';font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:#C8D0E0;text-decoration:none;padding:8px 14px;border-radius:6px;transition:.2s}
+.hd nav a:hover,.hd nav a:focus-visible{color:#fff;background:rgba(255,255,255,.08);outline:2px solid var(--orange);outline-offset:-2px}
+
+/* ---------- Hero ---------- */
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 70%);color:#fff;padding:72px 0 64px;position:relative;overflow:hidden}
+.hero::after{content:"";pointer-events:none;position:absolute;right:-140px;top:-140px;width:460px;height:460px;border-radius:50%;border:70px solid rgba(240,132,44,.12)}
+.kicker{font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:3px;text-transform:uppercase;color:var(--orange)}
+.hero h1{font-family:'Barlow Condensed';font-weight:800;font-size:clamp(44px,6vw,76px);line-height:.98;text-transform:uppercase;margin:14px 0 18px;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero p.lead{font-size:19px;color:#C9D2E4;max-width:640px;margin-bottom:34px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.chip-cta{font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:12px 22px;border-radius:8px;transition:.2s}
+.chip-cta.solid{background:var(--orange);color:#fff}
+.chip-cta.solid:hover{background:#D9701C}
+.chip-cta.ghost{color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.chip-cta.ghost:hover{border-color:var(--orange);color:var(--orange)}
+.hero-note{margin-top:30px;font-size:14px;color:#8E9BB5}
+
+/* ---------- Section scaffold ---------- */
+section.agent{padding:78px 0}
+section.agent:nth-of-type(even){background:var(--white)}
+.sec-head{max-width:760px;margin-bottom:14px}
+.sec-head .num{font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:3px;color:var(--orange);text-transform:uppercase}
+.sec-head h2{font-family:'Barlow Condensed';font-weight:800;font-size:clamp(32px,4vw,48px);text-transform:uppercase;color:var(--navy);line-height:1.02;margin:6px 0 12px}
+.sec-head p{font-size:17px;color:var(--gray)}
+.agent-grid{display:grid;grid-template-columns:400px 1fr;gap:44px;align-items:start;margin-top:36px}
+.agent-grid.flip{grid-template-columns:1fr 400px}
+.ctx h3{font-family:'Barlow Condensed';font-weight:700;font-size:20px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);margin:22px 0 8px}
+.ctx h3:first-child{margin-top:0}
+.ctx p{font-size:15.5px;color:var(--ink);margin-bottom:10px}
+.ctx ul{list-style:none;margin:4px 0 10px}
+.ctx li{font-size:15.5px;padding-left:20px;position:relative;margin-bottom:7px;color:var(--ink)}
+.ctx li::before{content:"▸";position:absolute;left:0;color:var(--orange);font-weight:700}
+.ctx .tip{background:var(--orange-soft);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:12px 16px;font-size:14.5px;color:var(--ink);margin-top:18px}
+.ctx .tip b{color:var(--navy)}
+
+/* ---------- Instagram demo ---------- */
+.ig-stage{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.ig-card{background:#fff;border:1px solid var(--line);border-radius:14px;width:100%;max-width:400px;box-shadow:0 12px 34px rgba(16,27,53,.10);overflow:hidden;flex-shrink:0}
+.ig-top{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--navy),#2E4574);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:800;font-size:15px;flex-shrink:0}
+.avatar.small{width:28px;height:28px;font-size:12px}
+.avatar.user{background:linear-gradient(135deg,#7A8699,#AAB4C5)}
+.ig-top .u{font-weight:700;font-size:14px}
+.ig-top .s{font-size:12px;color:var(--gray)}
+.ig-art{aspect-ratio:1/1;background:linear-gradient(150deg,var(--navy) 0%,var(--navy-deep) 60%,#0B1428 100%);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:34px;position:relative;overflow:hidden}
+.ig-art::before{content:"";pointer-events:none;position:absolute;right:-70px;bottom:-70px;width:240px;height:240px;border-radius:50%;border:34px solid rgba(240,132,44,.25)}
+.ig-art .a1{font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:2.5px;color:var(--orange);text-transform:uppercase}
+.ig-art .a2{font-family:'Barlow Condensed';font-weight:800;font-size:52px;line-height:.95;text-transform:uppercase;margin:10px 0}
+.ig-art .a3{font-size:15px;color:#C9D2E4;max-width:260px}
+.ig-actions{display:flex;gap:14px;padding:10px 14px 4px;font-size:20px}
+.ig-caption{padding:6px 14px 10px;font-size:14px;border-bottom:1px solid var(--line)}
+.ig-caption b{font-weight:700}
+.ig-comments{max-height:300px;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:12px}
+.cm{display:flex;gap:10px}
+.cm .body{font-size:14px}
+.cm .body .who{font-weight:700;margin-right:6px}
+.cm .meta{font-size:12px;color:var(--gray);margin-top:2px}
+.cm.bot .body .txt{background:var(--orange-soft);border-radius:10px;padding:8px 12px;display:inline-block;margin-top:2px}
+.cm.bot .who{color:var(--navy)}
+.badge-ai{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;background:var(--navy);color:#fff;border-radius:4px;padding:1px 6px;vertical-align:1px;margin-left:6px}
+.ig-input{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
+.txt-in{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:10px 16px;font-family:'Figtree';font-size:14px;outline:none}
+.txt-in:focus{border-color:var(--orange)}
+.send-btn{background:var(--orange);color:#fff;border:none;border-radius:22px;padding:0 20px;font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.send-btn:hover{background:#D9701C}
+.ig-suggest{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 14px}
+.sug{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:6px 12px;font-size:12.5px;color:var(--navy);cursor:pointer;transition:.15s}
+.sug:hover{background:var(--orange-soft);border-color:var(--orange)}
+.dm-panel{width:100%;max-width:330px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 34px rgba(16,27,53,.10);overflow:hidden;opacity:.45;transition:.3s}
+.dm-panel.live{opacity:1}
+.dm-head{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.dm-head .t{font-weight:700;font-size:14px}
+.dm-head .st{font-size:12px;color:#9FE870}
+.dm-body{padding:16px;min-height:190px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.dm-empty{color:var(--gray);font-size:13.5px;font-style:italic}
+.dm-msg{background:var(--paper);border-radius:14px 14px 14px 4px;padding:10px 14px;max-width:95%}
+.dm-msg a{color:var(--orange);font-weight:600}
+
+/* ---------- WhatsApp demo ---------- */
+.phone{width:100%;max-width:390px;margin:0 auto;background:#0D1117;border-radius:36px;padding:12px;box-shadow:0 24px 54px rgba(16,27,53,.25)}
+.screen{background:var(--wa-wall);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;height:640px;background-image:radial-gradient(rgba(0,0,0,.035) 1.2px,transparent 1.2px);background-size:16px 16px}
+.wa-head{background:var(--wa-green);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.wa-head .avatar{background:#fff;color:var(--wa-green)}
+.wa-head .t{font-weight:700;font-size:15px}
+.wa-head .st{font-size:12px;color:#B8E6D9}
+.wa-body{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:8px}
+.bub{max-width:82%;padding:9px 12px;border-radius:10px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-line;position:relative}
+.bub.in{background:#fff;align-self:flex-start;border-top-left-radius:2px}
+.bub.out{background:var(--wa-bubble);align-self:flex-end;border-top-right-radius:2px}
+.bub .tm{display:block;font-size:10.5px;color:rgba(0,0,0,.4);text-align:right;margin-top:3px}
+.bub a{color:#056162;font-weight:600}
+.bub b{color:var(--navy)}
+.typing{display:inline-flex;gap:4px;padding:12px 14px;background:#fff;border-radius:10px;align-self:flex-start}
+.typing i{width:7px;height:7px;border-radius:50%;background:#9AA5B4;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.wa-chips{display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:rgba(255,255,255,.65)}
+.wa-chips .sug{white-space:nowrap;background:#fff}
+.wa-input{display:flex;gap:8px;padding:10px 12px;background:#F0F2F5}
+.wa-input .txt-in{border-radius:22px;background:#fff}
+.wa-input .send-btn{background:var(--wa-accent);border-radius:50%;width:44px;height:44px;padding:0;font-size:18px}
+.wa-input .send-btn:hover{background:#1DA851}
+
+/* ---------- Landing demo ---------- */
+.mock-landing{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 18px 44px rgba(16,27,53,.14);margin-top:36px}
+.browser-bar{background:#E8EBF1;display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12.5px;color:var(--gray)}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot.r{background:#F26D5F}.dot.y{background:#F5BE4F}.dot.g{background:#5FC454}
+.url-pill{background:#fff;border-radius:14px;padding:4px 14px;margin-left:8px}
+.ml-body{background:linear-gradient(150deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;padding:64px 56px 72px;position:relative;min-height:480px}
+.ml-body::before{content:"";pointer-events:none;position:absolute;left:-90px;bottom:-90px;width:300px;height:300px;border-radius:50%;border:44px solid rgba(240,132,44,.14)}
+.ml-body .kicker{font-size:15px}
+.ml-body h3{font-family:'Barlow Condensed';font-weight:800;font-size:clamp(34px,4.4vw,56px);text-transform:uppercase;line-height:.98;margin:12px 0 16px;max-width:560px}
+.ml-body h3 em{font-style:normal;color:var(--orange)}
+.ml-body p{color:#C9D2E4;max-width:480px;font-size:16.5px;margin-bottom:22px}
+.ml-perks{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;max-width:560px}
+.perk{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:8px 14px;font-size:13.5px}
+.ml-cta{display:inline-block;background:var(--orange);color:#fff;text-decoration:none;font-family:'Barlow Condensed';font-weight:800;font-size:19px;letter-spacing:1.5px;text-transform:uppercase;padding:14px 30px;border-radius:8px;border:none;cursor:pointer}
+.ml-cta:hover{background:#D9701C}
+/* widget */
+.widget-btn{position:absolute;right:26px;bottom:26px;width:62px;height:62px;border-radius:50%;background:var(--orange);color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:5;transition:.2s}
+.widget-btn:hover{transform:scale(1.07)}
+.widget-btn .pulse{position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--orange);animation:pulse 2s infinite}
+@keyframes pulse{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.35);opacity:0}}
+.widget{position:absolute;right:26px;bottom:100px;width:340px;max-width:calc(100% - 52px);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 22px 54px rgba(0,0,0,.4);display:none;flex-direction:column;z-index:6;color:var(--ink)}
+.widget.open{display:flex}
+.wg-head{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.wg-head .t{font-weight:700;font-size:14px}
+.wg-head .st{font-size:12px;color:#9FE870}
+.wg-body{height:300px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--paper)}
+.wg-body .bub.in{background:#fff}
+.wg-body .bub.out{background:var(--orange-soft)}
+.wg-chips{display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:#fff;border-top:1px solid var(--line)}
+.wg-input{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--line)}
+
+/* ---------- Transparency + footer ---------- */
+.notes{background:var(--white);padding:64px 0}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px}
+.note-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:26px 28px}
+.note-card h4{font-family:'Barlow Condensed';font-weight:700;font-size:20px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);margin-bottom:10px}
+.note-card h4.o{color:var(--orange)}
+.note-card ul{list-style:none}
+.note-card li{font-size:14.5px;padding-left:20px;position:relative;margin-bottom:8px}
+.note-card li::before{content:"▸";position:absolute;left:0;color:var(--orange);font-weight:700}
+footer{background:var(--navy-deep);color:#8E9BB5;padding:34px 0;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer b{color:#fff;font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:2px;text-transform:uppercase}
+footer b span{color:var(--orange)}
+
+@media (max-width:960px){
+  .agent-grid,.agent-grid.flip{grid-template-columns:1fr}
+  .agent-grid > *{min-width:0}
+  .notes-grid{grid-template-columns:1fr}
+  .ml-body{padding:44px 26px 90px}
+  .hd nav a{padding:8px 8px;font-size:14px}
+}
+@media (max-width:560px){
+  .hd-brand{font-size:16px;letter-spacing:1px}
+  .hd nav a{font-size:12.5px;padding:6px 6px;letter-spacing:.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <div class="hd-brand">Eudora <span>×</span> Mindfit</div>
+    <nav>
+      <a href="#instagram">Instagram</a>
+      <a href="#whatsapp">WhatsApp</a>
+      <a href="#landing">Landing</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">Demo interactivo · preparado por Eudora</div>
+    <h1>Agentes de IA para <em>Mindfit</em>, listos para probar</h1>
+    <p class="lead">Tres agentes configurados con la información real de mindfit.cl — las 14 sedes, los planes, los servicios y el día de entrenamiento gratis. Escríbeles como lo haría un cliente y mira cómo responden en segundos, 24/7.</p>
+    <div class="hero-ctas">
+      <a class="chip-cta solid" href="#instagram">Agente de Instagram</a>
+      <a class="chip-cta ghost" href="#whatsapp">Agente de WhatsApp</a>
+      <a class="chip-cta ghost" href="#landing">Agente en la Landing</a>
+    </div>
+    <div class="hero-note">Demo de demostración comercial — no está conectado a los sistemas de Mindfit. Ver notas al final de la página.</div>
+  </div>
+</section>
+
+<!-- ================= AGENTE 1: INSTAGRAM ================= -->
+<section class="agent" id="instagram">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="num">Agente 01 · Awareness e interacción</div>
+      <h2>Responde cada comentario de Instagram en segundos</h2>
+      <p>Este agente vive en el perfil de Instagram de Mindfit y trabaja junto al community manager, no en su lugar.</p>
+    </div>
+    <div class="agent-grid">
+      <div class="ctx">
+        <h3>Dónde funciona</h3>
+        <p>En todas las publicaciones y anuncios de Mindfit en Instagram y Facebook. Cuando alguien comenta, el agente responde públicamente con el tono de la marca — y si detecta interés real («quiero más info», «¿precio?», «me interesa»), abre una conversación por mensaje directo.</p>
+        <h3>Qué resuelve</h3>
+        <ul>
+          <li>Cero comentarios sin responder, incluso de madrugada o fin de semana.</li>
+          <li>El community manager deja de perseguir comentarios y se enfoca en contenido y comunidad.</li>
+          <li>Cada «quiero más información» se convierte en una conversación con destino: guía, promoción o inscripción.</li>
+        </ul>
+        <h3>Pruébalo</h3>
+        <p>Escribe un comentario en la publicación, como lo haría un seguidor. Mira la respuesta pública y el mensaje directo que se genera al lado.</p>
+        <div class="tip"><b>En producción:</b> el agente se conecta a la cuenta real vía Meta Business y aprende el tono de Mindfit a partir de sus propias respuestas históricas.</div>
+      </div>
+      <div class="ig-stage">
+        <div class="ig-card">
+          <div class="ig-top">
+            <div class="avatar">MF</div>
+            <div>
+              <div class="u">mindfit.chile</div>
+              <div class="s">Patrocinado · Gimnasios en todo Chile</div>
+            </div>
+          </div>
+          <div class="ig-art">
+            <div class="a1">Mejora tu cuerpo, cambia tu mente</div>
+            <div class="a2">Tu primer<br>día es<br>gratis 💪</div>
+            <div class="a3">14 sedes · clases ilimitadas · evaluaciones con IA · kinesiología y nutrición</div>
+          </div>
+          <div class="ig-actions">❤️ 💬 📤</div>
+          <div class="ig-caption"><b>mindfit.chile</b> ¿Llevas meses diciendo «el lunes empiezo»? Este lunes te sale gratis. Comenta <b>«QUIERO»</b> y te contamos cómo 👇</div>
+          <div class="ig-comments" id="igComments">
+            <div class="cm">
+              <div class="avatar small user">C</div>
+              <div class="body"><span class="who">cata.rojas_</span><span class="txt">¿Tienen sede en Maipú?</span>
+                <div class="meta">hace 2 h</div></div>
+            </div>
+            <div class="cm bot">
+              <div class="avatar small">MF</div>
+              <div class="body"><span class="who">mindfit.chile</span><span class="badge-ai">IA · 4 s</span><br><span class="txt">¡Sí Cata! 💙 Estamos en Américo Vespucio #51, Maipú. Te escribimos por DM para coordinar tu día gratis 🙌</span>
+                <div class="meta">hace 2 h</div></div>
+            </div>
+          </div>
+          <div class="ig-suggest" id="igSuggest"></div>
+          <div class="ig-input">
+            <input class="txt-in" id="igInput" type="text" placeholder="Agrega un comentario..." aria-label="Escribe un comentario">
+            <button class="send-btn" id="igSend">Publicar</button>
+          </div>
+        </div>
+        <div class="dm-panel" id="dmPanel">
+          <div class="dm-head">
+            <div class="avatar small">MF</div>
+            <div>
+              <div class="t">mindfit.chile · Mensaje directo</div>
+              <div class="st">● Respuesta automática con IA</div>
+            </div>
+          </div>
+          <div class="dm-body" id="dmBody">
+            <div class="dm-empty">Cuando tu comentario muestre interés, aquí verás el mensaje directo que el agente envía para continuar la conversación.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENTE 2: WHATSAPP ================= -->
+<section class="agent" id="whatsapp">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="num">Agente 02 · Atención y servicio</div>
+      <h2>El asistente de WhatsApp que atiende 24/7</h2>
+      <p>El centro de atención del sistema: responde en minutos lo que hoy consume al equipo comercial de cada sede.</p>
+    </div>
+    <div class="agent-grid flip">
+      <div class="phone">
+        <div class="screen">
+          <div class="wa-head">
+            <div class="avatar small">MF</div>
+            <div>
+              <div class="t">Mindfit · Asistente Virtual</div>
+              <div class="st">en línea · responde en segundos</div>
+            </div>
+          </div>
+          <div class="wa-body" id="waBody"></div>
+          <div class="wa-chips" id="waChips"></div>
+          <div class="wa-input">
+            <input class="txt-in" id="waInput" type="text" placeholder="Escribe un mensaje" aria-label="Escribe un mensaje de WhatsApp">
+            <button class="send-btn" id="waSend" aria-label="Enviar">➤</button>
+          </div>
+        </div>
+      </div>
+      <div class="ctx">
+        <h3>Dónde funciona</h3>
+        <p>En el número de WhatsApp de Mindfit — el mismo canal que ya usan sus clientes. Conoce las 14 sedes con sus direcciones, los planes y sus condiciones, los servicios y las preventas de Valparaíso y Valdivia.</p>
+        <h3>Qué resuelve</h3>
+        <ul>
+          <li>Horarios, sedes y ubicaciones — con la dirección exacta de cada una.</li>
+          <li>Cupos en clases y horarios con menos gente por sede.</li>
+          <li>Precios, planes, congelamiento, traspasos y equipamiento.</li>
+          <li>Asiste en la inscripción y la reserva del día de entrenamiento gratis.</li>
+          <li>Deriva al equipo humano de la sede cuando el caso lo requiere.</li>
+        </ul>
+        <h3>Pruébalo</h3>
+        <p>Pregunta lo que preguntaría un cliente real: «¿cuánto cuesta el plan?», «¿dónde queda la sede de La Florida?», «¿a qué hora hay menos gente?», «quiero inscribirme».</p>
+        <div class="tip"><b>En producción:</b> se conecta vía WhatsApp Cloud API al sistema de reservas y CRM de Mindfit, con cupos y disponibilidad en tiempo real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENTE 3: LANDING ================= -->
+<section class="agent" id="landing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="num">Agente 03 · Conversión</div>
+      <h2>El agente que vive en la landing de nuevos miembros</h2>
+      <p>Las campañas de venta llevan tráfico a una landing diseñada para convertir. Ahí, un agente resuelve las dudas en tiempo real — antes de que la persona abandone la página. Haz clic en el botón naranjo para conversar.</p>
+    </div>
+    <div class="mock-landing">
+      <div class="browser-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="url-pill">mindfit.cl/nuevos-miembros — landing de ejemplo</span>
+      </div>
+      <div class="ml-body">
+        <div class="kicker">Única cadena de gimnasios 100% chilena</div>
+        <h3>Empieza hoy: tu primer día de entrenamiento es <em>gratis</em></h3>
+        <p>Entrena como y cuando quieras en 14 sedes. Evaluación inicial con rutina, clases grupales ilimitadas, evaluaciones con inteligencia artificial y un equipo de profesionales que te acompaña.</p>
+        <div class="ml-perks">
+          <span class="perk">✔ Clases ilimitadas</span>
+          <span class="perk">✔ Congelamiento gratis en prepago</span>
+          <span class="perk">✔ Hasta 12 cuotas sin interés</span>
+          <span class="perk">✔ Kinesiología y nutrición</span>
+        </div>
+        <button class="ml-cta" id="mlCta">Quiero mi día gratis</button>
+        <button class="widget-btn" id="wgBtn" aria-label="Abrir chat de ayuda"><span class="pulse"></span>💬</button>
+        <div class="widget" id="wg">
+          <div class="wg-head">
+            <div class="avatar small">MF</div>
+            <div>
+              <div class="t">Asistente Mindfit</div>
+              <div class="st">● En línea — te respondo al tiro</div>
+            </div>
+          </div>
+          <div class="wg-body" id="wgBody"></div>
+          <div class="wg-chips" id="wgChips"></div>
+          <div class="wg-input">
+            <input class="txt-in" id="wgInput" type="text" placeholder="Escribe tu duda..." aria-label="Escribe tu duda en el chat de la landing">
+            <button class="send-btn" id="wgSend">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NOTAS ================= -->
+<section class="notes">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="num">Transparencia</div>
+      <h2>Qué es real y qué es simulado en este demo</h2>
+      <p>En Eudora preferimos que el cliente sepa exactamente qué está viendo.</p>
+    </div>
+    <div class="notes-grid">
+      <div class="note-card">
+        <h4>Datos reales, tomados de mindfit.cl</h4>
+        <ul>
+          <li>Las 14 sedes con sus direcciones y números de WhatsApp.</li>
+          <li>Planes prepago (6 y 12 cuotas sin interés, congelamiento y activación gratis) y plan de suscripción mes a mes.</li>
+          <li>Servicios: evaluaciones con IA, CheckUp Technogym, nutrición, kinesiología, clases grupales, traspaso y suspensión de plan.</li>
+          <li>Día de entrenamiento gratis, convenios y preventas de Valparaíso y Valdivia.</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h4 class="o">Simulado para efectos del demo</h4>
+        <ul>
+          <li>Los horarios exactos de apertura, cupos y niveles de asistencia por sede son datos de ejemplo.</li>
+          <li>Las respuestas provienen de una base de conocimiento configurada por Eudora — este demo no está conectado a los sistemas de Mindfit ni envía mensajes reales.</li>
+          <li>En producción, los agentes usan IA generativa conectada al sistema de reservas, al CRM y a WhatsApp Cloud API, con datos en tiempo real y aprendizaje del tono de la marca.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b>Eudora <span>·</span> Sistemas de venta con IA</b>
+    <div>Demo preparado para Mindfit · Julio 2026 · Los agentes de este demo responden con información pública de mindfit.cl</div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   BASE DE CONOCIMIENTO — datos reales de mindfit.cl
+   ============================================================ */
+const SEDES = [
+  {n:"Los Leones", dir:"Av. Nueva Providencia #2192, Providencia", wa:"56983947423", keys:["los leones","leones","providencia"]},
+  {n:"Ciudad Empresarial", dir:"Av. del Parque #4023, Piso 2, Huechuraba", wa:"56937562796", keys:["ciudad empresarial","empresarial"]},
+  {n:"Pedro Fontova", dir:"Av. Pedro Fontova #7789, Huechuraba", wa:"56946508157", keys:["pedro fontova","fontova","huechuraba"]},
+  {n:"San Martín", dir:"San Martín 145, Santiago Centro", wa:"56964111283", keys:["san martin"]},
+  {n:"Bandera", dir:"Bandera 76, Santiago Centro", wa:"56966089100", keys:["bandera","santiago centro","centro"], nota:"¡Recién inaugurada! 🎉"},
+  {n:"San Miguel", dir:"Gran Avenida José Miguel Carrera #5234, San Miguel", wa:"56935312270", keys:["san miguel"]},
+  {n:"El Bosque", dir:"Gran Avenida 13.057, El Bosque", wa:"56944094018", keys:["el bosque","bosque"]},
+  {n:"La Florida", dir:"Serafín Zamora #127, 2º piso, La Florida", wa:"56988773400", keys:["la florida","florida"]},
+  {n:"Maipú", dir:"Américo Vespucio #51, Maipú", wa:"56933313062", keys:["maipu"]},
+  {n:"Melipilla", dir:"Merced 999, Melipilla", wa:"56928528410", keys:["melipilla"]},
+  {n:"Coronel", dir:"Av. Manuel Montt #1600, Coronel (Región del Bío Bío)", wa:"56967788262", keys:["coronel","bio bio","biobio"]},
+  {n:"Los Ángeles", dir:"Av. Gabriela Mistral 25, 2º piso, Los Ángeles", wa:"56927636216", keys:["los angeles","angeles"], nota:"¡Recién inaugurada! 🎉"},
+  {n:"Valparaíso", dir:"Av. Argentina 151, 4º piso, Valparaíso", wa:"56928236829", keys:["valparaiso","valpo"], nota:"En PREVENTA con precios especiales 🔥"},
+  {n:"Valdivia", dir:"Av. España 501, Valdivia", wa:"56928236829", keys:["valdivia"], nota:"Próximamente — preventa disponible 🔥"}
+];
+const LINKS = {
+  planes:"https://mindfit.cl/planes/",
+  gratis:"https://mindfit.cl/dia-de-entrenamiento-gratis/",
+  sedes:"https://mindfit.cl/sucursales/",
+  convenios:"https://mindfit.cl/convenios/"
+};
+/* Horarios y asistencia: DATOS DE EJEMPLO para el demo */
+const HORARIO_DEMO = "Lun a Vie 6:00–23:00 · Sáb 8:00–14:00 · Dom 9:00–14:00";
+const VALLE_DEMO = "entre 10:00 y 12:00 y entre 15:00 y 17:00 los días de semana";
+
+/* ============================================================
+   MOTOR DE INTENCIONES
+   ============================================================ */
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function has(t, words){return words.some(w=>t.includes(w));}
+function findSede(t){
+  for(const s of SEDES){ if(s.keys.some(k=>t.includes(k))) return s; }
+  return null;
+}
+function sedeCard(s){
+  let r = `📍 *Mindfit ${s.n}*\n${s.dir}`;
+  if(s.nota) r += `\n${s.nota}`;
+  r += `\nWhatsApp de la sede: +${s.wa}`;
+  return r;
+}
+
+/* channel: "wa" (servicio) | "wg" (ventas/landing) */
+function brain(raw, channel){
+  const t = norm(raw);
+  const sede = findSede(t);
+  const out = [];
+
+  // 1) Saludo
+  if(has(t,["hola","buenas","buenos dias","que tal","holi"]) && t.length < 30){
+    out.push(channel==="wg"
+      ? "¡Hola! 👋 Soy el asistente de Mindfit. ¿Te ayudo a activar tu primer día gratis o tienes alguna duda sobre los planes?"
+      : "¡Hola! 👋 Soy el asistente virtual de Mindfit. Puedo ayudarte con horarios, sedes, planes, cupos en clases y tu inscripción. ¿Qué necesitas?");
+    return out;
+  }
+
+  // 2) Día gratis / probar
+  if(has(t,["gratis","probar","prueba","primer dia","dia de entrenamiento"])){
+    let msg = "¡Buena decisión! 💪 Tu *primer día de entrenamiento es gratis* en cualquiera de nuestras sedes.\n\nSolo tienes que registrarte aquí y elegir sede y día:\n👉 "+LINKS.gratis;
+    if(sede) msg += `\n\nY como me preguntas por ${sede.n}:\n${sedeCard(sede)}`;
+    out.push(msg);
+    out.push("¿Quieres que te recomiende un horario con poca gente para tu primera visita? 🙂");
+    return out;
+  }
+
+  // 3) Congelar / suspender / traspaso (antes que precios: "congelar mi plan")
+  if(has(t,["congelar","congelamiento","suspender","suspension","pausar","traspaso","traspasar"])){
+    out.push("¡Tranquilo/a! En los *planes prepago* el congelamiento es *gratis* 🙌 y también ofrecemos *traspaso de plan* si necesitas cederlo.\n\nPara gestionarlo, escríbele directo al WhatsApp de tu sede y lo dejan listo. ¿Cuál es tu sede? Te paso el contacto.");
+    return out;
+  }
+
+  // 4) Precios / planes
+  if(has(t,["precio","precios","valor","cuanto","plan","planes","mensualidad","cuota","matricula","suscripcion","barato","oferta","promocion","promo","descuento"])){
+    out.push("Tenemos dos modalidades 👇\n\n💳 *Planes Prepago*\n• Defines inicio y fin de tu plan\n• Hasta *12 cuotas sin interés*\n• Congelamiento y activación *gratis*\n• Evaluación inicial con rutina + evaluaciones de progreso\n\n🔄 *Plan de Suscripción*\n• Pagas mes a mes con cargo automático\n• Acceso ilimitado a clases + evaluación física mensual con CheckUp Technogym\n• Tasa anual $40.000 · activación $30.000\n\nLos valores varían según la sede. Aquí los ves al detalle:\n👉 "+LINKS.planes);
+    if(sede && (sede.n==="Valparaíso"||sede.n==="Valdivia")){
+      out.push(`¡Ojo! 🔥 ${sede.n} está en *preventa con precios especiales* por tiempo limitado:\n${sedeCard(sede)}`);
+    } else {
+      out.push(channel==="wg"
+        ? "Y recuerda: tu *primer día es gratis*, así pruebas antes de decidir 😉 ¿Te dejo el link?"
+        : "¿Te interesa alguna sede en particular? Te paso los valores y el contacto directo de esa sede 🙂");
+    }
+    return out;
+  }
+
+  // 4) Inscripción / contratar
+  if(has(t,["inscrib","contratar","unirme","matricular","empezar","comenzar","quiero entrar","registrar","como me hago socio","socio"])){
+    let msg = "¡Vamos con todo! 🙌 Inscribirte toma menos de 5 minutos:\n\n1️⃣ Elige tu sede\n2️⃣ Elige plan prepago (en cuotas) o suscripción (mes a mes)\n3️⃣ Paga online y quedas activo al tiro\n\n👉 "+LINKS.planes;
+    if(sede) msg += `\n\nPara ${sede.n}:\n${sedeCard(sede)}`;
+    out.push(msg);
+    out.push("Si prefieres, también puedes partir con tu *día gratis* y decidir después: "+LINKS.gratis);
+    return out;
+  }
+
+  // 5) Horarios de apertura
+  if(has(t,["horario","hora abren","a que hora","abren","cierran","atienden","funcionan","abierto","domingo","sabado","feriado"]) && !has(t,["menos gente","vacio","lleno"])){
+    let msg = `🕐 Nuestro horario general es:\n*${HORARIO_DEMO}*`;
+    msg += sede ? `\n\n${sedeCard(sede)}\nPara confirmar el horario exacto de ${sede.n} (puede variar levemente), su equipo te responde directo en ese WhatsApp 🙂` : "\n\nPuede variar levemente según la sede. ¿Cuál te queda más cerca? Te paso su dirección y contacto directo.";
+    out.push(msg);
+    return out;
+  }
+
+  // 6) Horas valle / aforo
+  if(has(t,["menos gente","poca gente","vacio","mas vacio","lleno","aforo","tranquilo","sin gente","menos concurrido"])){
+    out.push(`Buena pregunta 😎 Según la asistencia típica, los horarios con *menos gente* son ${VALLE_DEMO}.\n\nLas horas peak son 7:00–9:00 y 18:00–21:00.\n\nSi me dices tu sede, te digo el mejor momento exacto para entrenar tranquilo.`);
+    return out;
+  }
+
+  // 7) Cupos / clases / reservas
+  if(has(t,["cupo","clase","clases","reserva","reservar","spinning","zumba","funcional","grupal","yoga","agendar"])){
+    let msg = "🏋️ Todos nuestros planes incluyen *acceso ilimitado a clases grupales dirigidas*.\n\nEn el demo te muestro disponibilidad de ejemplo para mañana:\n• Funcional 07:00 — 6 cupos\n• Spinning 08:00 — 2 cupos ⚠️\n• Full Body 18:30 — 9 cupos\n• Zumba 19:30 — 4 cupos\n\n¿Te reservo uno?";
+    if(sede) msg = `Clases en *Mindfit ${sede.n}* (ejemplo del demo):\n• Funcional 07:00 — 6 cupos\n• Spinning 08:00 — 2 cupos ⚠️\n• Full Body 18:30 — 9 cupos\n• Zumba 19:30 — 4 cupos\n\nTodos los planes incluyen clases ilimitadas. ¿Te reservo uno?`;
+    out.push(msg);
+    return out;
+  }
+  if(has(t,["si, reserva","reservame","el de las","tomo el"])){
+    out.push("¡Listo! ✅ Tu cupo quedó reservado (simulación del demo).\n\nEn producción, esta reserva queda registrada directamente en el sistema de clases de Mindfit y te llega la confirmación con recordatorio.");
+    return out;
+  }
+
+  // 8) Sedes / ubicaciones
+  if(sede || has(t,["sede","sedes","sucursal","direccion","donde","ubicacion","ubicaciones","queda","cerca"])){
+    if(sede){
+      out.push(sedeCard(sede));
+      out.push(channel==="wg" ? "¿Quieres partir con tu día gratis en esa sede? 😉 "+LINKS.gratis : "¿Te ayudo con los horarios, planes o tu día gratis en esa sede?");
+    } else {
+      out.push("Tenemos *14 sedes* a lo largo de Chile 🇨🇱\n\n*Santiago:* Los Leones, Ciudad Empresarial, Pedro Fontova, San Martín, Bandera 🆕, San Miguel, El Bosque, La Florida, Maipú y Melipilla\n*Regiones:* Coronel, Los Ángeles 🆕, Valparaíso (preventa 🔥) y Valdivia (preventa 🔥)\n\nAdemás está *Mindfit Advanced* en Las Condes.\n\n¿Cuál te queda más cerca? Te paso dirección y contacto.");
+    }
+    return out;
+  }
+
+  // 9) Servicios / profesionales
+  if(has(t,["kinesio","nutricion","nutricionista","evaluacion","entrenador","profesional","rutina","technogym","bioimpedancia","maquina","equipamiento","servicio"])){
+    out.push("En Mindfit no entrenas solo 💙 Nuestros planes incluyen:\n\n• *Evaluación inicial* con rutina de ejercicios\n• Evaluaciones de progreso con *CheckUp Technogym* y bioimpedanciometría\n• *Evaluaciones con inteligencia artificial*\n• Programas de entrenamiento y entrenamientos personalizados\n• *Nutrición* y apoyo de *kinesiología*\n• Clases grupales ilimitadas\n\n¿Quieres agendar tu evaluación inicial? Parte con tu día gratis: "+LINKS.gratis);
+    return out;
+  }
+
+  // 11) Preventa
+  if(has(t,["preventa","pre venta","nueva sede","cuando abren"])){
+    out.push("🔥 Tenemos *preventa con precios especiales* en las nuevas sedes:\n\n"+sedeCard(SEDES[12])+"\n\n"+sedeCard(SEDES[13])+"\n\nLos cupos de preventa son limitados. ¿Te ayudo a asegurar el tuyo? 👉 "+LINKS.planes);
+    return out;
+  }
+
+  // 12) Convenios
+  if(has(t,["convenio","empresa","corporativo","mi trabajo"])){
+    out.push("Sí, tenemos *convenios* con empresas e instituciones 🤝\n\nRevisa si la tuya está aquí: "+LINKS.convenios+"\n\nSi no está, cuéntame el nombre y el equipo comercial la contacta para evaluarlo.");
+    return out;
+  }
+
+  // 13) Reclamo / humano
+  if(has(t,["reclamo","problema","molest","hablar con","persona","humano","ejecutivo","cobro","boleta","factura"])){
+    out.push("Entiendo, y quiero que esto lo vea una persona del equipo 🙏\n\nTe derivo directo al canal de *Sugerencias y Reclamos* de Mindfit: wa.me/56933134648 o contacto@mindfit.cl\n\nEn producción, este agente además crea el ticket en el CRM y avisa al encargado de tu sede al instante.");
+    return out;
+  }
+
+  // Fallback
+  out.push(channel==="wg"
+    ? "¡Buena pregunta! Para darte el detalle exacto te conecto con el equipo 🙂 Mientras tanto: tu *primer día es gratis* ("+LINKS.gratis+") y los planes están aquí: "+LINKS.planes+"\n\n¿Te ayudo con horarios, sedes o precios?"
+    : "Esa me la anoto para el equipo humano 📝 En producción, el agente deriva esta consulta al encargado de tu sede y te avisa cuando responda.\n\nMientras, puedo ayudarte con: *horarios*, *sedes*, *precios y planes*, *cupos en clases* o tu *inscripción*. ¿Qué te sirve?");
+  return out;
+}
+
+/* ============================================================
+   UI HELPERS
+   ============================================================ */
+function fmt(s){
+  return s
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*([^*\n]+)\*/g,"<b>$1</b>")
+    .replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')
+    .replace(/(wa\.me\/\d+)/g,'<a href="https://$1" target="_blank" rel="noopener">$1</a>');
+}
+function now(){const d=new Date();return d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");}
+function scrollBottom(el){el.scrollTop = el.scrollHeight;}
+
+function chatFactory(bodyEl, channel){
+  function userMsg(text){
+    const b=document.createElement("div");b.className="bub out";
+    b.innerHTML=fmt(text)+'<span class="tm">'+now()+' ✓✓</span>';
+    bodyEl.appendChild(b);scrollBottom(bodyEl);
+  }
+  function botMsgs(msgs, done){
+    let i=0;
+    function next(){
+      if(i>=msgs.length){if(done)done();return;}
+      const ty=document.createElement("div");ty.className="typing";ty.innerHTML="<i></i><i></i><i></i>";
+      bodyEl.appendChild(ty);scrollBottom(bodyEl);
+      setTimeout(()=>{
+        ty.remove();
+        const b=document.createElement("div");b.className="bub in";
+        b.innerHTML=fmt(msgs[i])+'<span class="tm">'+now()+'</span>';
+        bodyEl.appendChild(b);scrollBottom(bodyEl);
+        i++;setTimeout(next,420);
+      }, 750 + Math.min(msgs[i].length*6, 1400));
+    }
+    next();
+  }
+  return {
+    send(text){
+      if(!text.trim())return;
+      userMsg(text.trim());
+      botMsgs(brain(text, channel));
+    },
+    bot(msgs, done){botMsgs(msgs, done);}
+  };
+}
+function bindChips(container, chips, onPick){
+  container.innerHTML="";
+  chips.forEach(c=>{
+    const b=document.createElement("button");b.className="sug";b.type="button";b.textContent=c;
+    b.addEventListener("click",()=>onPick(c));
+    container.appendChild(b);
+  });
+}
+
+/* ============================================================
+   AGENTE WHATSAPP
+   ============================================================ */
+const waBody=document.getElementById("waBody");
+const waChat=chatFactory(waBody,"wa");
+const waInput=document.getElementById("waInput");
+document.getElementById("waSend").addEventListener("click",()=>{waChat.send(waInput.value);waInput.value="";});
+waInput.addEventListener("keydown",e=>{if(e.key==="Enter"){waChat.send(waInput.value);waInput.value="";}});
+bindChips(document.getElementById("waChips"),
+  ["¿Cuánto cuesta el plan?","¿Dónde queda La Florida?","¿A qué hora hay menos gente?","Cupos para spinning","Quiero inscribirme","Necesito congelar mi plan"],
+  c=>{waChat.send(c);});
+setTimeout(()=>{waChat.bot(["¡Hola! 👋 Soy el asistente virtual de *Mindfit*. Estoy disponible 24/7 para ayudarte con horarios, sedes, planes, cupos en clases y tu inscripción.\n\n¿En qué te ayudo hoy?"]);},700);
+
+/* ============================================================
+   AGENTE LANDING (widget)
+   ============================================================ */
+const wg=document.getElementById("wg");
+const wgBody=document.getElementById("wgBody");
+const wgChat=chatFactory(wgBody,"wg");
+const wgInput=document.getElementById("wgInput");
+let wgGreeted=false;
+function openWidget(){
+  wg.classList.add("open");
+  if(!wgGreeted){wgGreeted=true;setTimeout(()=>{wgChat.bot(["¡Hola! 👋 Vi que estás mirando el *primer día gratis*. ¿Te ayudo a activarlo o tienes alguna duda sobre los planes?"]);},400);}
+  wgInput.focus();
+}
+document.getElementById("wgBtn").addEventListener("click",()=>{
+  wg.classList.contains("open")?wg.classList.remove("open"):openWidget();
+});
+document.getElementById("mlCta").addEventListener("click",()=>{
+  openWidget();
+  setTimeout(()=>{wgChat.bot(["¡Excelente! 🎉 Para activar tu día gratis solo necesito saber: ¿en qué *sede* te gustaría entrenar?\n\n(Escríbeme la comuna, por ejemplo: Maipú, La Florida, Valparaíso...)"]);},600);
+});
+document.getElementById("wgSend").addEventListener("click",()=>{wgChat.send(wgInput.value);wgInput.value="";});
+wgInput.addEventListener("keydown",e=>{if(e.key==="Enter"){wgChat.send(wgInput.value);wgInput.value="";}});
+bindChips(document.getElementById("wgChips"),
+  ["¿Cuánto cuesta?","¿Qué incluye el plan?","¿Dónde tienen sedes?","Quiero mi día gratis"],
+  c=>{wgChat.send(c);});
+
+/* ============================================================
+   AGENTE INSTAGRAM
+   ============================================================ */
+const igComments=document.getElementById("igComments");
+const igInput=document.getElementById("igInput");
+const dmPanel=document.getElementById("dmPanel");
+const dmBody=document.getElementById("dmBody");
+
+function igPublicReply(t, sede){
+  if(has(t,["quiero","info","informacion","interesa","dm","como"])) return "¡Nos encanta esa energía! 🔥 Te acabamos de escribir por DM con todo lo que necesitas 📩";
+  if(has(t,["precio","valor","cuanto","plan"])) return "¡Hola! 💙 Los valores varían por sede, así que te enviamos el detalle por DM para no marearte aquí 📩";
+  if(sede) return `¡Sí! 💪 Estamos en ${sede.dir}. Te escribimos por DM para coordinar tu visita 🙌`;
+  if(has(t,["gratis","probar","prueba"])) return "¡El primer día corre por nuestra cuenta! 🎉 Revisa tu DM, te enviamos el link para agendarlo 📩";
+  if(has(t,["horario","hora","abren"])) return "¡Hola! Atendemos de lunes a domingo 💪 Te mandamos los horarios de tu sede por DM 📩";
+  return "¡Gracias por escribirnos! 💙 Te respondemos todos los detalles por DM 📩";
+}
+function igDM(t, sede){
+  const msgs=[];
+  let intro="¡Hola! 👋 Vimos tu comentario en nuestra publicación. ";
+  if(has(t,["precio","valor","cuanto","plan"])){
+    intro+="Te cuento: tenemos *planes prepago hasta en 12 cuotas sin interés* (con congelamiento gratis) y *suscripción mes a mes*. Los valores por sede están aquí 👉 "+LINKS.planes;
+  } else if(sede){
+    intro+=`¡Qué bueno que te interesa *Mindfit ${sede.n}*! 📍 ${sede.dir}. `+(sede.nota?sede.nota+" ":"")+"Tu primer día es gratis 👉 "+LINKS.gratis;
+  } else if(has(t,["gratis","probar","prueba"])){
+    intro+="Tu *primer día de entrenamiento es 100% gratis* 🎉 Agéndalo aquí en 1 minuto 👉 "+LINKS.gratis;
+  } else {
+    intro+="Tu *primer día de entrenamiento es gratis* en cualquiera de nuestras 14 sedes 🎉 Agéndalo aquí 👉 "+LINKS.gratis;
+  }
+  msgs.push(intro);
+  msgs.push("¿Te gustaría que te recomiende la sede más cercana o te cuente los planes? Estoy aquí 24/7 🙂");
+  return msgs;
+}
+function addIgComment(text){
+  if(!text.trim())return;
+  const t=norm(text);
+  const sede=findSede(t);
+  // user comment
+  const u=document.createElement("div");u.className="cm";
+  u.innerHTML='<div class="avatar small user">TÚ</div><div class="body"><span class="who">tú</span><span class="txt"></span><div class="meta">ahora</div></div>';
+  u.querySelector(".txt").textContent=text.trim();
+  igComments.appendChild(u);scrollBottom(igComments);
+  // bot public reply
+  const start=Date.now();
+  setTimeout(()=>{
+    const secs=Math.max(2,Math.round((Date.now()-start)/1000));
+    const b=document.createElement("div");b.className="cm bot";
+    b.innerHTML='<div class="avatar small">MF</div><div class="body"><span class="who">mindfit.chile</span><span class="badge-ai">IA · '+secs+' s</span><br><span class="txt"></span><div class="meta">ahora</div></div>';
+    b.querySelector(".txt").textContent=igPublicReply(t,sede);
+    igComments.appendChild(b);scrollBottom(igComments);
+    // DM
+    dmPanel.classList.add("live");
+    dmBody.querySelector(".dm-empty")?.remove();
+    const dms=igDM(t,sede);
+    let i=0;
+    function nextDM(){
+      if(i>=dms.length)return;
+      setTimeout(()=>{
+        const m=document.createElement("div");m.className="dm-msg";
+        m.innerHTML=fmt(dms[i]);
+        dmBody.appendChild(m);
+        i++;nextDM();
+      }, 900);
+    }
+    nextDM();
+  }, 1600);
+}
+document.getElementById("igSend").addEventListener("click",()=>{addIgComment(igInput.value);igInput.value="";});
+igInput.addEventListener("keydown",e=>{if(e.key==="Enter"){addIgComment(igInput.value);igInput.value="";}});
+bindChips(document.getElementById("igSuggest"),
+  ["Quiero más información 🙋","¿Cuánto cuesta el plan?","¿Tienen sede en La Florida?","¿Cómo agendo el día gratis?"],
+  c=>{addIgComment(c);});
+</script>
+</body>
+</html>
